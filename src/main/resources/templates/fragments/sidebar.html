@@ -1,0 +1,21 @@
+<div th:fragment="sidebar" class="sidebar d-flex flex-column justify-content-start align-items-stretch" style="min-height: 100vh; width: 300px; background-color: #ffffff; border-right: 1px solid #dee2e6; padding: 20px;">
+
+    <!-- Кнопки для ролей -->
+    <div class="mt-1 w-100">
+
+        <!-- Кнопка "Администратор" -->
+        <button id="admin-view-btn"
+                th:if="${#lists.contains(user.roles.![name], 'ROLE_ADMIN')}"
+                class="btn btn-danger btn-block mb-2">
+            Администратор
+        </button>
+
+        <!-- Кнопка "Пользователь" -->
+        <button id="user-view-btn"
+                th:if="${#lists.contains(user.roles.![name], 'ROLE_USER')}"
+                class="btn btn-primary btn-block mb-2">
+            Пользователь
+        </button>
+    </div>
+
+</div>
