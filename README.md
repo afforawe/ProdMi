@@ -1,30 +1,27 @@
-[ProdMi_README.md](https://github.com/user-attachments/files/26547474/ProdMi_README.md)
-# ProdMi
+**ProdMi** — это веб-приложение на **Spring Boot** для управления пользователями с разграничением доступа по ролям. Проект сочетает серверный интерфейс на **Thymeleaf** и **REST API** для административных операций. В нем реализованы аутентификация, авторизация, CRUD-операции, работа с БД через JPA/Hibernate и классическая многослойная архитектура backend-приложения.
 
-ProdMi is a Spring Boot web application for user management with role-based access control. The project combines a server-rendered UI built with Thymeleaf and a REST API for administrative operations. It demonstrates authentication, authorization, CRUD workflows, persistence with JPA/Hibernate, and a layered backend architecture.
+## Обзор
 
-## Overview
+В приложении предусмотрено два уровня доступа:
 
-The application provides two access levels:
+- **USER** — может просматривать только свой профиль
+- **ADMIN** — может просматривать всех пользователей, а также создавать, редактировать и удалять их
 
-- **USER** — can view their own profile
-- **ADMIN** — can view all users and perform create, update, and delete operations
+Интерфейс рендерится с помощью **Thymeleaf**, а операции управления пользователями выполняются через **REST endpoints**, которые вызываются JavaScript-кодом на клиенте.
 
-The UI is rendered with **Thymeleaf**, while user management actions are handled through **REST endpoints** consumed by JavaScript on the client side.
+## Возможности
 
-## Features
+- Аутентификация на базе **Spring Security**
+- Авторизация по ролям `USER` и `ADMIN`
+- CRUD-операции с пользователями для администратора
+- Просмотр личного профиля для авторизованного пользователя
+- Серверный рендеринг страниц с помощью Thymeleaf
+- REST API для административных и пользовательских операций
+- Хранение данных через Spring Data JPA и MySQL
+- Автоматическая инициализация тестовых ролей и пользователей при запуске
+- Хеширование паролей через `PasswordEncoder`
 
-- Authentication with **Spring Security**
-- Role-based authorization for `USER` and `ADMIN`
-- User CRUD operations for administrators
-- Personal profile view for authenticated users
-- Server-side rendering with Thymeleaf
-- REST API for admin and user actions
-- Persistence with Spring Data JPA and MySQL
-- Automatic initialization of demo roles and users at startup
-- Password hashing with `PasswordEncoder`
-
-## Tech Stack
+## Технологический стек
 
 - **Java 11**
 - **Spring Boot 2.6.2**
@@ -38,42 +35,42 @@ The UI is rendered with **Thymeleaf**, while user management actions are handled
 - **Lombok**
 - **Maven**
 
-## Architecture
+## Архитектура
 
-The project follows a classic layered structure:
+Проект построен по классической многослойной схеме:
 
-- **controller** — MVC controllers and REST endpoints
-- **service** — business logic
-- **repository** — data access layer
-- **entity** — JPA entities
-- **dto / mapper** — data transfer objects and mapping between layers
-- **configs / security** — security configuration, authentication flow, password encoding, startup initialization
+- **controller** — MVC-контроллеры и REST endpoints
+- **service** — бизнес-логика
+- **repository** — слой доступа к данным
+- **entity** — JPA-сущности
+- **dto / mapper** — объекты передачи данных и маппинг между слоями
+- **configs / security** — конфигурация безопасности, логика аутентификации, кодирование паролей, инициализация стартовых данных
 
-### Main modules
+### Основные модули
 
-- `controller.admin` — admin page and admin REST API
-- `controller.user` — user page and profile API
-- `security` — custom `UserDetailsService` and security user model
-- `configs` — security setup and login success handling
-- `configs.init` — bootstrap data for roles and demo users
+- `controller.admin` — административная страница и REST API администратора
+- `controller.user` — пользовательская страница и API профиля
+- `security` — кастомный `UserDetailsService` и модель пользователя для Spring Security
+- `configs` — настройки безопасности и логика успешного входа
+- `configs.init` — инициализация ролей и тестовых пользователей
 
-## Security Model
+## Модель безопасности
 
-Access rules are configured as follows:
+Правила доступа настроены следующим образом:
 
-- `/admin/**` and `/api/admin/**` — accessible only to users with role `ADMIN`
-- `/user/**` and `/api/user/**` — accessible to users with role `USER` or `ADMIN`
-- all other routes require authentication
+- `/admin/**` и `/api/admin/**` — доступны только пользователям с ролью `ADMIN`
+- `/user/**` и `/api/user/**` — доступны пользователям с ролью `USER` или `ADMIN`
+- остальные маршруты требуют аутентификации
 
-The application uses form-based login provided by Spring Security.
+Для входа используется form login, предоставляемый Spring Security.
 
-## Domain Model
+## Доменная модель
 
 ### User
 
-Represents an application user.
+Сущность пользователя приложения.
 
-Fields:
+Поля:
 - `id`
 - `email`
 - `name`
@@ -83,66 +80,66 @@ Fields:
 
 ### Role
 
-Represents a user role.
+Сущность роли пользователя.
 
-Fields:
+Поля:
 - `id`
 - `name`
 
-Relationship:
+Связь:
 - `User` ↔ `Role` — `ManyToMany`
 
 ## API Endpoints
 
 ### Admin API
 
-Base path: `/api/admin/users`
+Базовый путь: `/api/admin/users`
 
-| Method | Endpoint | Description |
-|--------|----------|-------------|
-| GET | `/api/admin/users` | Get all users |
-| GET | `/api/admin/users/{id}` | Get user by id |
-| POST | `/api/admin/users` | Create user |
-| PUT | `/api/admin/users` | Update user |
-| DELETE | `/api/admin/users/{id}` | Delete user |
+| Метод | Endpoint | Описание |
+|--------|----------|----------|
+| GET | `/api/admin/users` | Получить список всех пользователей |
+| GET | `/api/admin/users/{id}` | Получить пользователя по id |
+| POST | `/api/admin/users` | Создать пользователя |
+| PUT | `/api/admin/users` | Обновить пользователя |
+| DELETE | `/api/admin/users/{id}` | Удалить пользователя |
 
 ### User API
 
-Base path: `/api/user`
+Базовый путь: `/api/user`
 
-| Method | Endpoint | Description |
-|--------|----------|-------------|
-| GET | `/api/user/getMyProfile` | Get profile of the authenticated user |
+| Метод | Endpoint | Описание |
+|--------|----------|----------|
+| GET | `/api/user/getMyProfile` | Получить профиль текущего пользователя |
 
-## UI Pages
+## Пользовательский интерфейс
 
-- `/admin` — admin panel with users table and user creation form
-- `/user` — user profile page
+- `/admin` — административная панель с таблицей пользователей и формой создания пользователя
+- `/user` — страница профиля пользователя
 
-The main UI is composed using Thymeleaf templates and fragments. Administrative actions such as create, edit, and delete are performed asynchronously via JavaScript and Fetch API.
+Основной интерфейс построен на Thymeleaf templates и fragments. Административные действия, такие как создание, редактирование и удаление пользователей, выполняются асинхронно через JavaScript и Fetch API.
 
-## Demo Data
+## Тестовые данные
 
-At startup, the application creates the following roles if they do not exist:
+При запуске приложение создает следующие роли, если они отсутствуют:
 
 - `ROLE_USER`
 - `ROLE_ADMIN`
 
-It also seeds several demo users, including an administrator:
+Также в базу добавляются тестовые пользователи, включая администратора:
 
-| Email | Password | Roles |
-|------|----------|-------|
+| Email | Пароль | Роли |
+|------|--------|------|
 | `ivan@mail.com` | `111111` | `ROLE_USER`, `ROLE_ADMIN` |
 | `sergey@mail.com` | `222222` | `ROLE_USER` |
 | `artem@mail.com` | `333333` | `ROLE_USER` |
 | `vadim@mail.com` | `444444` | `ROLE_USER` |
 | `artyr@mail.com` | `555555` | `ROLE_USER` |
 
-> Passwords are encoded before being stored in the database.
+> Пароли кодируются перед сохранением в базе данных.
 
-## Database Configuration
+## Конфигурация базы данных
 
-Current local configuration is defined in `src/main/resources/application.properties`:
+Текущая локальная конфигурация находится в `src/main/resources/application.properties`:
 
 ```properties
 spring.datasource.url=jdbc:mysql://localhost:3306/mydbtest
@@ -154,69 +151,69 @@ spring.jpa.show-sql=true
 spring.jpa.properties.hibernate.dialect=org.hibernate.dialect.MySQL8Dialect
 ```
 
-### Notes
+### Примечания
 
-- Make sure the `mydbtest` database exists before starting the application.
-- `create-drop` recreates tables on startup and drops them on shutdown, which is convenient for local development but not recommended for production.
-- Update datasource properties according to your local environment.
+- Перед запуском необходимо создать базу данных `mydbtest`
+- Режим `create-drop` пересоздает таблицы при запуске и удаляет их при остановке приложения; это удобно для локальной разработки, но не подходит для production
+- Параметры подключения к БД нужно при необходимости адаптировать под локальное окружение
 
-## Getting Started
+## Запуск проекта
 
-### Prerequisites
+### Требования
 
 - Java 11+
 - Maven 3.8+
 - MySQL 8+
 
-### 1. Create database
+### 1. Создание базы данных
 
 ```sql
 CREATE DATABASE mydbtest;
 ```
 
-### 2. Configure datasource
+### 2. Настройка datasource
 
-Open `src/main/resources/application.properties` and update the database connection if needed.
+Откройте `src/main/resources/application.properties` и при необходимости измените параметры подключения к базе данных.
 
-### 3. Run the application
+### 3. Запуск приложения
 
-Using Maven wrapper:
+Через Maven Wrapper:
 
 ```bash
 ./mvnw spring-boot:run
 ```
 
-Or with Maven installed locally:
+Или через локально установленный Maven:
 
 ```bash
 mvn spring-boot:run
 ```
 
-### 4. Open in browser
+### 4. Открыть в браузере
 
-By default, the application runs on:
+По умолчанию приложение запускается по адресу:
 
 ```text
 http://localhost:8080
 ```
 
-After startup, use one of the demo accounts to sign in.
+После запуска можно войти под одной из тестовых учетных записей.
 
-## Build
+## Сборка
 
-To build the project:
+Для сборки проекта выполните:
 
 ```bash
 ./mvnw clean package
 ```
 
-The generated artifact will be located in:
+Собранный артефакт будет находиться в директории:
 
 ```text
 target/
 ```
 
-## Project Structure
+## Структура проекта
 
 ```text
 src/main/java/ru/kata/spring/boot_security/demo
@@ -241,15 +238,15 @@ src/main/resources
     └── fragments
 ```
 
-## Possible Improvements
+## Возможные улучшения
 
-- Add validation and global exception handling
-- Add pagination and filtering for the users table
-- Replace `create-drop` with migrations
-- Add automated tests
-- Add Docker support for local startup
-- Introduce audit logging for admin actions
+- Добавить валидацию и глобальную обработку исключений
+- Добавить пагинацию и фильтрацию в таблицу пользователей
+- Заменить `create-drop` на миграции
+- Добавить автоматизированные тесты
+- Добавить Docker-конфигурацию для локального запуска
+- Реализовать аудит административных действий
 
-## License
+## Лицензия
 
-This project is provided for educational and demonstration purposes.
+Проект предоставлен в учебных и демонстрационных целях.
